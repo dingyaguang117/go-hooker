@@ -1,14 +1,12 @@
-package hooker
+package main
 
 import (
 	"fmt"
-	"testing"
+	"github.com/dingyaguang117/go-hooker/hooker"
 )
 
-// Func 原始函数原型
 type Func func(a, b int) int
 
-// SomeFunc 原始函数定义
 func SomeFunc(a, b int) int {
 	fmt.Printf("%d + %d\n", a, b)
 	return a + b
@@ -32,14 +30,17 @@ func Hook2(next Func) Func {
 	}
 }
 
-func TestNewHooker(t *testing.T) {
-	hooker := NewHooker[Func](SomeFunc, Hook1, Hook2)
-	hooker.GetWrapped()(1, 2)
+func Hook3(next Func) Func {
+	return func(a, b int) int {
+		fmt.Println("----- Hook3 before ----")
+		c := next(a, b)
+		fmt.Println("----- Hook3 after ----")
+		return c
+	}
 }
 
-func TestAddHook(t *testing.T) {
-	hooker := NewHooker[Func](SomeFunc)
-	hooker.AddHook(Hook1)
-	hooker.AddHook(Hook2)
-	hooker.GetWrapped()(1, 2)
+func main() {
+	h := hooker.NewHooker[Func](SomeFunc, Hook1, Hook2)
+	h.AddHook(Hook3)
+	h.GetWrapped()(1, 2)
 }
