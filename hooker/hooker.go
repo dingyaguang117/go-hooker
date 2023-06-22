@@ -27,6 +27,14 @@ func (h *Hooker[Func]) AddHook(hook Hook[Func]) *Hooker[Func] {
 	return h
 }
 
-func (h *Hooker[Func]) GetWrappedFunc() Func {
+func (h *Hooker[Func]) GetOrigin() Func {
+	return h.origin
+}
+
+func (h *Hooker[Func]) GetWrapped() Func {
 	return h.wrapped
+}
+
+func (h *Hooker[Func]) GetHooks() []Hook[Func] {
+	return h.hooks
 }

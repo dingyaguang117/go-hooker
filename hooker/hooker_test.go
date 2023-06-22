@@ -34,5 +34,5 @@ func Hook2(next Func) Func {
 
 func TestHookFunc(t *testing.T) {
 	hooker := NewHooker[Func](SomeFunc, Hook1, Hook2).AddHook(Hook2)
-	hooker.GetWrappedFunc()(1, 2)
+	hooker.GetWrapped()(1, 2)
 }
