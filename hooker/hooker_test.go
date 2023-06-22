@@ -14,22 +14,25 @@ func SomeFunc(a, b int) int {
 	return a + b
 }
 
-// Hook1 Hook
-var Hook1 Hook[Func] = func(f Func) Func {
+func Hook1(next Func) Func {
 	return func(a, b int) int {
-		fmt.Println("----- before ----")
-		c := f(a, b)
-		fmt.Println("----- after ----")
+		fmt.Println("----- Hook1 before ----")
+		c := next(a, b)
+		fmt.Println("----- Hook1 after ----")
+		return c
+	}
+}
+
+func Hook2(next Func) Func {
+	return func(a, b int) int {
+		fmt.Println("----- Hook2 before ----")
+		c := next(a, b)
+		fmt.Println("----- Hook2 after ----")
 		return c
 	}
 }
 
 func TestHookFunc(t *testing.T) {
-	var func1 = Hook1(SomeFunc)
-	func1(1, 2)
-}
-
-func TestHookFunc2(t *testing.T) {
-	hooker := NewHooker[Func](SomeFunc, Hook1, Hook1)
+	hooker := NewHooker[Func](SomeFunc, Hook1, Hook2).AddHook(Hook2)
 	hooker.GetWrappedFunc()(1, 2)
 }
